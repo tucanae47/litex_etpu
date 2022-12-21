@@ -113,6 +113,32 @@ class ETPUSoc(SoCMini):
         # self.submodules.bridge = bridge
         # self.add_wb_master(bridge.wishbone)
 
+def add_args(parser):
+    builder_args(parser)
+    soc_core_args(parser)
+    verilator_build_args(parser)
+
+    soc_group = parser.add_argument_group(title="SoC options")
+    soc_group.add_argument("--rom-init",             default=None,            help="ROM init file (.bin or .json).")
+    soc_group.add_argument("--with-led-chaser",      action="store_true",     help="Enable LED chaser.")
+    soc_group.add_argument("--with-gpio",            action="store_true",     help="Enable Tristate GPIO (32 pins).")
+    soc_group.add_argument("--with-wfg",             action="store_true",     help="Enable the waveform generator module")
+    
+    sim_group = parser.add_argument_group(title="Simulation options")
+    sim_group.add_argument("--sim-debug",            action="store_true",     help="Add simulation debugging modules.")
+    sim_group.add_argument("--gtkwave-savefile",     action="store_true",     help="Generate GTKWave savefile.")
+    sim_group.add_argument("--non-interactive",      action="store_true",     help="Run simulation without user input.")
+
+    target_group = parser.add_argument_group(title="Target options")
+    target_group.add_argument("--simulate",             action="store_true",     help="Run simulation")
+    target_group.add_argument("--build",                action="store_true",     help="Build design")
+
+    target_group.add_argument("--toolchain",            default="trellis",       help="FPGA toolchain (trellis or diamond).")
+    target_group.add_argument("--device",               default="LFE5U-85F",     help="FPGA device (LFE5U-12F, LFE5U-25F, LFE5U-45F or LFE5U-85F).")
+    target_group.add_argument("--revision",             default="2.0",           help="Board revision (2.0 or 1.7).")
+    target_group.add_argument("--sys-clk-freq",         default=50e6,            help="System clock frequency.")
+
+
 def main():
     from litex.soc.integration.soc import LiteXSoCArgumentParser
     parser = LiteXSoCArgumentParser(description="LiteX SoC Simulation utility")

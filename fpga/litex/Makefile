@@ -1,6 +1,8 @@
 default: build
-
 CPU_TYPE = vexriscv
+
+firmware/firmware_build.bin:
+	cd firmware; make -f build.make clean; make -f build.make
 
 build-prebuild:
 	python3 etpu_soc.py --build --cpu-type $(CPU_TYPE) --cpu-variant minimal+debug
