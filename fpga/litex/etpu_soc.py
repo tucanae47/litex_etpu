@@ -106,6 +106,29 @@ class ETPUSoc(SoCMini):
         self.submodules.leds = LedChaser(
             pads         = platform.request_all("user_led"),
             sys_clk_freq = sys_clk_freq)
+        platform.add_source("../../design/etpu/npu_wb.v")
+        platform.add_source("../../design/etpu/sysa_pe.v")
+        out1 = Signal(15)    
+        load_end = Signal(3)    
+        en = Signal(1)    
+        wfg = wishbone.Interface(bursting=False)
+        self.add_memory_region("wfg", origin=0x30000000, length=0x0100000, type="cached") # linker
+        self.add_wb_slave(address=0x30000000, interface=wfg)
+        self.specials += Instance("npu_wb",
+            i_wb_clk_i      = self.crg.cd_sys.clk,
+            i_wb_rst_i      = self.crg.cd_sys.rst,
+            i_wb_stb_i      = (((wfg.adr<<2)[24:32] == 0x30) & wfg.stb),
+            i_wb_cyc_i      = wfg.cyc,
+            i_wb_we_i       = wfg.we,
+            i_wb_sel_i     = wfg.sel,
+            i_wb_adr_i     = (wfg.adr << 2) & 0x000000FF , # add two zeros
+            i_wb_dat_i    = wfg.dat_w,
+            o_wb_ack_o    = wfg.ack,
+            o_wb_dat_o    = wfg.dat_r,
+            o_out1 = out1,
+            o_load_end = load_end,
+            o_en    = en
+        )
 
         # uart_ports = platform.request("serial")
         # self.add_uartbone(name="serial", clk_freq=sys_clk_freq, baudrate=115200)

@@ -1,0 +1,25 @@
+valentyusb*
+lite*
+pythondata*
+migen*
+build
+
+
+# Cache
+**/__pycache__
+**/sim_build
+
+# Dump
+*.vcd
+*.fst
+
+results.xml
+.~lock.*
+*.log
+*.bit
+*.config
+ulx3s.json
+
+build
+*.o
+*.d
