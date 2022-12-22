@@ -106,6 +106,7 @@ class ETPUSoc(SoCMini):
         self.submodules.leds = LedChaser(
             pads         = platform.request_all("user_led"),
             sys_clk_freq = sys_clk_freq)
+
         platform.add_source("../../design/etpu/npu_wb.v")
         platform.add_source("../../design/etpu/sysa_pe.v")
         out1 = Signal(15)    
